@@ -18,6 +18,9 @@ $categories = mysqli_fetch_all(mysqli_query($con, $query_get_category)); //по�
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Penguins</title>
     <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
@@ -31,8 +34,8 @@ $categories = mysqli_fetch_all(mysqli_query($con, $query_get_category)); //по�
                 <p>Section</p>
             </div>
 
-            <form action="" class = "search_input" >
-                <input type="text" placeholder="Search">
+            <form action="" class = "search_input" id = "search_input" method="GET">
+                <input type="text" placeholder="Search" id = "search" name="search">
             </form>
 
             <div class="sign-in">
@@ -67,3 +70,14 @@ $categories = mysqli_fetch_all(mysqli_query($con, $query_get_category)); //по�
 
             
         </nav>
+
+        <script>
+            $('#search_input').keydown(function(e) {
+                if (e.key === 'Enter') {
+                    console.log('Нажата клавиша Enter!');
+                    <?php 
+                     $search_res= isset($_GET["search"]) ? $_GET["search"] :false;
+                    ?>
+                }
+                });
+        </script>

@@ -11,18 +11,36 @@ include "header.php";
 
 
 $id_cat = isset($_GET['cat']) ?($_GET['cat']) :false;
+$sort= isset($_GET["sort"]) ? $_GET["sort"] :false;
 
-$query_newcategory = "";
+
+$params= "";
+
+$query= "SELECT * FROM news";
 
 if($id_cat){
-    $query_newcategory = "SELECT * FROM news WHERE category_id=$id_cat";
-}else{
-    $query_newcategory = "select * from news";
-    
+    $params.="cat=$id_cat";
+    $query = "SELECT * FROM news WHERE category_id=$id_cat";
 }
 
+if($sort){
+    // $params.="sort=$sort";
+    $query="SELECT * FROM news ORDER BY publish_date $sort";
+}
 
-$news = mysqli_query($con,$query_newcategory);
+if($sort && $id_cat){
+    $query = "SELECT * FROM news WHERE category_id=$id_cat ORDER BY publish_date $sort";
+}
+
+if($search_res){
+    $query = "SELECT * FROM news WHERE title LIKE '%$search_res%'";
+};
+
+
+$news = mysqli_query($con,$query);
+
+var_dump($params);
+
 
 
 ?>
@@ -30,8 +48,23 @@ $news = mysqli_query($con,$query_newcategory);
 
         <main>
             <section class="last-news">
+                <section class="sort">
+                    <h2>Сортировка по дате:</h2>
+
+                <ul class="list-group list-group-horizontal mt-5 mb-3">
+                    <li class="list-group-item">
+                        <a href="/?sort=ASC<?=($params!='')?'&'.$params:''?>"><img width="20" src="/images/icons/asc-sort.png" alt=""></a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="/?sort=DESC<?=($params!='')?'&'.$params:''?>"><img width="20" src="/images/icons/desc-sort.png" alt=""></a>
+                    </li>
+                </ul>
+
+                </section>
                 <div class="container-index">
                     <?php
+
+                    $var_dump=$new;
 
                     if(mysqli_num_rows($news)==0){
                         echo "нет новостей";
@@ -43,7 +76,7 @@ $news = mysqli_query($con,$query_newcategory);
                     echo "<img src='images/news/" . $new['image']. "'>";
                     echo "<a href = 'oneNew.php?new=$new_id'>". $new['title']."</a>";
                     echo "<p>".$new['content']."</p>";
-                
+                    
                     echo  "</div>";
                     }
                   }
