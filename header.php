@@ -1,4 +1,7 @@
 <?php
+session_start();
+
+
 include "connect.php"; // выражение include включает и выполняет указанный файл
 $query_get_category = "select * from categories";
 
@@ -8,6 +11,9 @@ $query_get_category = "select * from categories";
 
 $categories = mysqli_fetch_all(mysqli_query($con, $query_get_category)); //получаем результат запроса из переменной query_get_category
 // и преобразуем его в двумерный массив, где каждый элемент это массив с построчным получением кортежей из таблицы результата запроса
+
+
+$username = isset($_SESSION["user_id"]) ? mysqli_fetch_assoc(mysqli_query($con, 'SELECT name FROM users WHERE user_id=' . $_SESSION["user_id"]))["name"]:false;
 ?>
 
 <!DOCTYPE html>
@@ -21,6 +27,9 @@ $categories = mysqli_fetch_all(mysqli_query($con, $query_get_category)); //по�
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
 </head>
 
 <body>
@@ -38,11 +47,20 @@ $categories = mysqli_fetch_all(mysqli_query($con, $query_get_category)); //по�
                 <input type="text" placeholder="Search" id = "search" name="search">
             </form>
 
+            <?php if($username) { ?> 
+                <li><a href="/page.php">
+                    <?=$username?>
+                </a></li>
+            
+            <?php }?>
+
             <div class="sign-in">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M18 16.6316C16.3675 18.2105 13.7008 19 10 19C6.29917 19 3.63251 18.2105 2 16.6316C2 13.3481 3.90591 10.9832 6.70588 10C7.60059 10.4169 8.59455 11 10 11C11.4054 11 12.3311 10.3926 13.2941 10C16.0575 10.9965 18 13.3748 18 16.6316ZM10 9C7.79086 9 6 7.20914 6 5C6 2.79086 7.79086 1 10 1C12.2091 1 14 2.79086 14 5C14 7.20914 12.2091 9 10 9Z" fill="#BCBFC2"/>
-            </svg>
-                <a href='reg.php'>Sign In</a>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M18 16.6316C16.3675 18.2105 13.7008 19 10 19C6.29917 19 3.63251 18.2105 2 16.6316C2 13.3481 3.90591 10.9832 6.70588 10C7.60059 10.4169 8.59455 11 10 11C11.4054 11 12.3311 10.3926 13.2941 10C16.0575 10.9965 18 13.3748 18 16.6316ZM10 9C7.79086 9 6 7.20914 6 5C6 2.79086 7.79086 1 10 1C12.2091 1 14 2.79086 14 5C14 7.20914 12.2091 9 10 9Z" fill="#BCBFC2"/>
+                </svg>
+                <a href='/<?=(!$username)?"reg":"exit"?>.php'>
+                    
+                <?=(!$username)?"Вход":"Выход"?></a>
             </div>
         </div>
 

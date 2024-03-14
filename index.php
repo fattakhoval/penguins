@@ -37,10 +37,17 @@ if($search_res){
 };
 
 
-$news = mysqli_query($con,$query);
+$paginate_count= 3; // limit n
+
+$page = isset($_GET['page'])?$_GET['page']:1;
+
+$count_news= mysqli_num_rows(mysqli_query($con, $query));
+
+$offset = $page *$paginate_count - $paginate_count; // offset m
+
+$news = mysqli_query($con,$query . " LIMIT $paginate_count OFFSET $offset");
 
 var_dump($params);
-
 
 
 ?>
@@ -64,7 +71,7 @@ var_dump($params);
                 <div class="container-index">
                     <?php
 
-                    $var_dump=$new;
+                    
 
                     if(mysqli_num_rows($news)==0){
                         echo "нет новостей";
@@ -86,17 +93,32 @@ var_dump($params);
             </section>
         </main>
 
+        <nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    
+    <?php 
+    for($i=1; $i <= ceil($count_news/$paginate_count); $i++){?>
+        <li class="page-item"><a class="page-link" href="?page=<?=$i?><?=$id_cat?'&id_cat='.$id_cat:''?><?=$sort?'&sort='.$sort:''?>">
+            <?=$i?>
+        </a></li>
+     <?php }?>
+
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
 
     </header>
-    <!-- <nav>
-        <div class="n_title">
-            <h1 class="title">Пингвины</h1>
-        </div>
 
-        <div class="n_nav">
-
-        </div>
-    </nav> -->
 
 </body>
 
